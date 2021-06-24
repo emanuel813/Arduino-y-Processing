@@ -1,0 +1,60 @@
+import processing.serial.*;
+Serial miPuerto;
+int valorLeido = 0; // el valor que leeremos del puerto
+int potenciometro = 0; // el valor actual del potenciómetro
+int valorR = 255; // el valor de color Rojo para el fondo
+int valorG = 255; // el valor de color Verde para el fondo
+int valorB = 255; // el valor de color Azul para el fondo
+char seleccion = 'R'; // qué valor estamos cambiando ahora si R (rojo) G (verde) o B (Azul)
+boolean presionoBoton = false;
+boolean estadoAnterior = false;
+void setup() {
+  size(640, 360);
+  miPuerto = new Serial(this, "COM7", 9600); // creamos una conexión con serial con el Arduino
+  // en general el puerto es COM7 pero si no funciona, hay que ver en el IDE Arduino qué puerto está usando
+}
+void draw() {
+  if (miPuerto.available()>0) { // si hay datos para leer en el puerto
+    valorLeido = miPuerto.read(); // leemos el valor del puerto
+    if (valorLeido=='P') { // si leo una "P" entonces el valor que sigue es el del potenciómetro
+      potenciometro = miPuerto.read();
+    } else { // sino
+      if (valorLeido == 'B') { // si es una "B" es el del botón
+        presionoBoton = miPuerto.read() == 'V'; // si es "V" de verdadero dará true, sino false
+      } else {// si es otra cosa leemos igual para vaciar el buffer
+        miPuerto.read();
+      }
+    }
+  }
+  if (estadoAnterior!=presionoBoton && presionoBoton == true) {// si el estado del botón cambió, y está
+    // presionado ahora debería cambiar el color que tenemos seleccionado para cambiar
+    if (seleccion == 'R') { // si el color actual es R
+      seleccion='G'; // pasamos al que sigue G
+    } else { //sino
+      if (seleccion == 'G') { // si es G
+        seleccion='B'; // pasamos a B
+      } else {
+        if (seleccion == 'B') { // y si es B
+          seleccion='R'; // volvemos a R de nuevo.
+        }
+      }
+    }
+  }
+  if (seleccion == 'R') {// si la seleccion es R, cambiamos el valor R del color del fondo
+    valorR=potenciometro;
+    fill(255, 0, 0); // y dibujaremos el rectángulo de color rojo
+  }
+  if (seleccion == 'G') { // lo mismo con verde
+    valorG=potenciometro;
+    fill(0, 255, 0);
+  }
+  if (seleccion == 'B') { // lo mismo con azul
+    valorB=potenciometro;
+    fill(0, 0, 255);
+  }
+  background(valorR, valorG, valorB); // dibujamos el fondo del color que creamos
+  rect(8, 8, 8, 8);// dibujamos un pequeño rectángulo del color que corresponde
+  fill(0, 0, 0); // vamos a dibujar ahora con negro el texto para ver cómo está formado el color de fondo
+  text("Rojo: "+ valorR + " Verde: " + valorG + "Azul: " + valorB, 24, 16); // en sus componentesRGB
+  estadoAnterior = presionoBoton; // actualizamos el estado del botón
+}
