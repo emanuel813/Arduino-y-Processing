@@ -1,0 +1,30 @@
+char valorLeido; //almacenamos el valor leído
+void setup()
+{
+ pinMode(8, OUTPUT); // usamos el led en el pin 8
+ Serial.begin(9600); // iniciamos la comunicacion a 0600 bps
+ esperarSaludo(); // enviamos saludos, hasta recibir uno
+}
+void loop()
+{
+ if (Serial.available() > 0) { // si hay datos
+ valorLeido = Serial.read(); // lo leemos y guardamos en valor leído
+ if(valorLeido == '1') { // si se presiona el botón del mouse, el valor leído es 1
+ digitalWrite(8, HIGH); // encendemos el led
+ }
+ if(valorLeido == '0') { // si es 0 entonces no se presiona el mouse
+ digitalWrite(8,LOW);// apagamos el led
+ }
+ } else {
+ int potenciometro = analogRead(A0);// leemos el valor
+ byte datoAEnviar = byte(map(potenciometro, 0, 1024, 0, 255));// lo ponemos entre 0 y 255
+ Serial.write(datoAEnviar); // lo enviamos
+ }
+ delay(100);
+}
+void esperarSaludo() { // esta función espera un saludo
+ while (Serial.available() <= 0) {//mientras no haya respuesta repetir el siguiente código
+ Serial.write("A"); // enviamos el saludo 'A'
+ delay(300);// esperamos
+ }
+}
