@@ -1,0 +1,21 @@
+import processing.serial.*;
+Serial miPuerto;
+boolean estadoAnterior = false;
+void setup() {
+ size(640, 360);
+miPuerto = new Serial(this,"COM5",9600); // creamos una conexion con serial con el Arduino
+ // en general el puerto es COM5 pero si no funciona, hay qué ver en el IDE arduino que puerto
+// está usando
+}
+void draw() {
+ if (mousePressed == true) { // si se hizo click
+if (estadoAnterior != mousePressed) { // y antes no se estaba haciendo click
+ miPuerto.write('1'); // enviamos un 1 a Arduino
+ }
+ } else { // si no se hizo click
+ if (estadoAnterior != mousePressed) { // y antes SI se estaba haciendo click
+ miPuerto.write('0'); // enviamos un 0 a Arduino
+ }
+ }
+ estadoAnterior = mousePressed;
+}
