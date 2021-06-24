@@ -1,0 +1,15 @@
+void setup() {
+pinMode(8,OUTPUT); // usamos el pin 8 para el Led
+digitalWrite(8,LOW);
+ Serial.begin(9600); // iniciamos la comunicacion serial
+}
+void loop() {
+if (Serial.available()>0) { // si hay datos para leer
+ byte valorLeido = Serial.read(); // leerlo
+ if (valorLeido=='1') { // si es un 1
+ digitalWrite(8,HIGH); // prendemos el led
+ } else {
+ digitalWrite(8,LOW); // sino, lo apagamos
+ }
+ }
+}
