@@ -1,0 +1,16 @@
+void setup() {
+ Serial.begin(9600); // comenzamos la conexión serial
+ pinMode(A0,INPUT); // usaremos A0 para el potenciómetro como input
+ pinMode(8, INPUT); // usaremos el pin 8 como input
+}
+void loop() {
+ Serial.write('P'); // vamos a escribir el valor del potenciómetro
+ Serial.write( byte(map(analogRead(A0),0,1023,0,255))); // leemos el potenciómetro
+ Serial.write('B'); // vamos a escribir el valor del botón
+ if (digitalRead(8)==HIGH) { // si está HIGH
+ Serial.write('V'); // es verdadero, es decir se presionó
+ } else {
+ Serial.write('F'); // es falso, es decir no se presionó
+ }
+ delay(100); // esperamos 100 milisegundos
+}
