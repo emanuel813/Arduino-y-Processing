@@ -1,0 +1,50 @@
+int RedVal = 0;    
+int GreenVal = 0;   
+int BlueVal = 0;    
+int inByte = 0;         
+int Red= A0;
+int Green=A1;
+int Blue= A2;
+
+void setup()
+{
+  // start serial port at 9600 bps and wait for port to open:
+  Serial.begin(9600);
+  while (!Serial) {
+    ; // wait for serial port to connect. Needed for Leonardo only
+  }
+
+
+  pinMode(Red, INPUT);   
+  pinMode(Green, INPUT);  
+  pinMode(Blue, INPUT);  
+  establishContact();  // send a byte to establish contact until receiver responds 
+}
+
+void loop()
+{
+  // if we get a valid byte, read analog ins:
+  if (Serial.available() > 0) {
+    // get incoming byte:
+    inByte = Serial.read();
+    // I had to map my potentiometers values as they did not all have the same resistance. 
+    RedVal = map(analogRead(Red), 0, 1023, 0, 255);
+
+    GreenVal = map(analogRead(Green), 0, 1023, 0, 255);
+
+    BlueVal = map(analogRead(Blue), 0, 1023, 0, 255);
+    // send sensor values:
+    Serial.print(RedVal);
+    Serial.print(",");
+    Serial.print(GreenVal);
+    Serial.print(",");
+    Serial.println(BlueVal);               
+  }
+}
+
+void establishContact() {
+  while (Serial.available() <= 0) {
+    Serial.println("0,0,0");   // send an initial string
+    delay(300);
+  }
+}
