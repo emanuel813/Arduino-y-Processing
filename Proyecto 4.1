@@ -1,0 +1,31 @@
+import processing.serial.*;
+Serial miPuerto;
+int valorLeido;
+boolean primerSaludo;
+void setup() {
+size(200, 200); // usaremosunaventanapequeña.
+miPuerto = new Serial(this,"COM7",9600); // recuerda cambiar el Puerto al que
+// corresponda en tu pc
+}
+void draw() {
+ if (miPuerto.available()>0) {
+valorLeido = miPuerto.read();
+ if (primerSaludo == false) {// si no estableció el primer saludo
+ if (valorLeido == 'A') {// si el valor de val es A, entonces el Arduino nos
+//está saludando.
+ miPuerto.clear(); // limpiamos el estado del puerto
+ primerSaludo = true; // ahora sí se estableció el primer contacto
+ miPuerto.write('A'); // escribimos una A para saludar al Arduino
+ }
+ } else { //si ya se había hecho el primer contacto
+ // hacer algo con el valor leído
+ if (mousePressed == true) {// si el mouse está presionado mandar un 1
+miPuerto.write('1'); //send a 1
+ } else {
+miPuerto.write('0'); // sino un 0
+ }
+ }
+ }
+delay(100);// esperamos
+background(valorLeido,valorLeido,valorLeido); // dibujamos el fondo
+}
