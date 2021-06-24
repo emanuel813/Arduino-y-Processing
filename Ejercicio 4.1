@@ -1,0 +1,35 @@
+#include <Servo.h>
+
+Servo yservo;  Servo xservo; // para ambos servos estableceremos valores iniciales para x,y 
+
+int ypos = 0;
+int xpos= 0;
+
+void setup(){
+  xservo.attach(A0); //(analog pin 0) para el servo x
+  yservo.attach(15);  //(analog pin 1) para el servo y 
+ 
+  Serial.begin(9600);
+  Serial.println("Rolling");
+ 
+}
+
+void loop() {
+  static int v = 0; // valor a enviar al servo (0-180)
+  if ( Serial.available()) {
+    char ch = Serial.read(); // leer un carácter del puerto serie y asignarlo a ch
+    switch(ch) { // cambiar basado en el valor de ch
+      case '0'...'9': // si es numerico
+        v = v * 10 + ch - '0';
+        break;
+      case 'x': // si es x
+        xservo.write(v);
+        v = 0;
+        break;
+      case 'y':
+        yservo.write(v);
+        v = 0;
+        break;
+    }
+  }
+}
