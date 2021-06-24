@@ -1,0 +1,12 @@
+void setup() {
+ Serial.begin(9600); // creamos la conexión serial
+ pinMode(A0,INPUT); // usaremos el pin analógico como entrada
+}
+void loop() {
+ int valorLeido = analogRead(A0);// leemos el valor
+ byte datoAEnviar = byte(map(valorLeido, 0, 1024, 0, 255)); // hacemos que entre en un byte
+ // es decir transformaremos el valor que va de 0 a 1024 que leemos a
+ // un valor que va de 0 a máximo 255
+ Serial.write(datoAEnviar); // enviamos el valor en byte por el puerto serial
+ delay(50); // dejamos pasar un par de milisegundos
+}
