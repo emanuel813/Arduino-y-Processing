@@ -1,0 +1,17 @@
+import processing.serial.*;
+Serial miPuerto;
+int valorLeido = 0;
+void setup() {
+ size(640, 480); // creamos la ventana
+ miPuerto = new Serial(this,"COM7",9600); // creamos una conexión con serial con el
+ // Arduino
+ // en general el puerto es COM5 pero si no funciona hay que ver en el IDE Arduino qué puerto
+ //está usando
+}
+void draw() {
+ if (miPuerto.available()>0) { // si hay datos para leer en el puerto
+ valorLeido = miPuerto.read(); // leemos el valor del que hay en el puerto
+ }
+ background(valorLeido,valorLeido,valorLeido); // dibujamos un fondo de negro a blanco dependiendo
+ // del valor leído
+}
